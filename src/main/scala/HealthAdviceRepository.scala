@@ -3,27 +3,43 @@ import scala.util.Random
 
 trait HealthAdviceRepository {
   def all(): Future[Seq[HealthAdvice]]
-  def exercise(): Future[Seq[HealthAdvice]]
-  def alimentation(): Future[Seq[HealthAdvice]]
+  def getCategory(category: String): Future[Seq[HealthAdvice]]
   def getOneRandomAdvice(): Future[HealthAdvice]
 }
 
-class InMemoryHealthRepository(val HealthAdvices: Seq[HealthAdvice]=Nil)(implicit ec:ExecutionContext)
-  extends HealthAdviceRepository{
+class InMemoryHealthRepository(val healthAdvices: List[HealthAdvice]=Nil)(implicit ec:ExecutionContext)
+  extends HealthAdviceRepository {
 
-  override def all(): Future[Seq[HealthAdvice]] = Future(HealthAdvices)
+  override def all(): Future[Seq[HealthAdvice]] = Future.successful {
+    try {
+      this.healthAdvices.toVector
+    } catch {
+      case x: Throwable => println(x.getMessage)
+        Nil
+    }
+  }
 
-  override def exercise(): Future[Seq[HealthAdvice]] =
-    Future(HealthAdvices.toList.filter(_.category.getOrElse("")=="Exercise"))
-
-  override def alimentation(): Future[Seq[HealthAdvice]] =
-    Future(HealthAdvices.toList.filter(_.category.getOrElse("")=="Alimentation"))
+  override def getCategory(categoryAsked: String): Future[Seq[HealthAdvice]] = {
+    Future.successful {
+      try {
+        healthAdvices.filter(x=>{
+          x.category match {
+            case Some(x) => x.name==categoryAsked
+            case None => false
+          }
+        })
+      } catch {
+        case x: Exception => println("error" + x.getMessage)
+          Nil.toVector
+      }
+    }
+  }
 
   def getOneRandomAdvice={
     Future.successful{
       val r = new Random()
-      val adviceNumber = (r.nextDouble() * this.HealthAdvices.size).toInt
-      HealthAdvices(adviceNumber)
+      val adviceNumber = (r.nextDouble() * this.healthAdvices.size).toInt
+      healthAdvices(adviceNumber)
     }
   }
 }

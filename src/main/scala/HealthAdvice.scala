@@ -20,7 +20,6 @@ object HealthAdvice{
       HealthAdvice("Eat a fruit everyday",Some(category2)),
       HealthAdvice("Eat fruits and vegetables",Some(category2)),
       HealthAdvice("Eat fruits and vegetables",None))
-
     l
   }
 
