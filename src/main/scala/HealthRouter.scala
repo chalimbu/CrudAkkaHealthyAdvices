@@ -1,5 +1,6 @@
 //for make the routing
-import akka.http.scaladsl.server.{Directives,Route}
+import akka.http.scaladsl.server.directives.PathDirectives.path
+import akka.http.scaladsl.server.{Directives, Route}
 //for json support
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 import io.circe.generic.auto._
@@ -12,11 +13,20 @@ class HealthRouter(healthAdviceRepository: HealthAdviceRepository) extends Direc
             complete(healthAdviceRepository.getOneRandomAdvice)
           }
       },
-      path("exercise"){
+      path(Segment){ categoryLoking=>
+        concat(
+          pathEnd{
+            get{//categoryLoking
+              complete(healthAdviceRepository.getCategory(categoryLoking))
+            }
+          }
+        )
+      },
+      path("alimentation"){
         concat(
           pathEnd{
             get{
-              complete(healthAdviceRepository.getCategory("Exercise"))
+              complete(healthAdviceRepository.getCategory("Alimentation"))
             }
           }
         )
