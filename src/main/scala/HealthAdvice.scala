@@ -23,9 +23,5 @@ object HealthAdvice{
 
     l
   }
-  def getOneRandomAdvice(l:List[HealthAdvice]): HealthAdvice={
-    val r=new Random()
-    val adviceNumber=(r.nextDouble()*l.size).toInt
-    l(adviceNumber)
-  }
+
 }
