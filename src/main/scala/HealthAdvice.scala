@@ -7,7 +7,7 @@ case class HealthAdvice(val advice:String,val category: Option[Category]) {
         case Some(cat) => s",${cat}"
         case None => ""
       }
-    }
+    }//.
   }
 }
 
